@@ -7,4 +7,6 @@ public class RequestParams {
     private String username;
     private String password;
     private String token;
+    private String name;
+    private String avatar;
 }
