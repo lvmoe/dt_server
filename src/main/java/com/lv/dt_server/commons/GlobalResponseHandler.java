@@ -1,6 +1,5 @@
 package com.lv.dt_server.commons;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -9,7 +8,6 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-@Slf4j
 @ControllerAdvice(annotations = {ResponseResult.class})
 public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
 
@@ -37,7 +35,7 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
             return o;
         }
         /*
-         * 处理异常也,判断body是否为异常类。
+         * 处理异常,判断body是否为异常类。
          * o instanceof Exception
          * */
         return Result.success(o);

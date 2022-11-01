@@ -16,7 +16,7 @@ public class Result {
     }
 
     public static Result success(Object data) {
-        return new Result(data, 200, "success");
+        return new Result(data, 20000, "success");
     }
 
     public static Result success(Object data, Integer code, String message) {
