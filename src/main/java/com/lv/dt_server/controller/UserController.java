@@ -2,11 +2,24 @@ package com.lv.dt_server.controller;
 
 import com.lv.dt_server.commons.RequestParams;
 import com.lv.dt_server.commons.ResponseParams;
+import com.lv.dt_server.commons.ResponseResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/user")
+@ResponseResult
 public class UserController {
+
+    @PostMapping(path = "/test")
+    public Object test() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("token", "token");
+        map.put("code", 20000);
+        return map;
+    }
 
     @ResponseBody
     @PostMapping(path = "/login")
