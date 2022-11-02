@@ -1,13 +1,12 @@
 package com.lv.dt_server.controller;
 
-import com.lv.dt_server.commons.RequestParams;
-import com.lv.dt_server.commons.ResponseResult;
-import com.lv.dt_server.commons.Result;
+import com.lv.dt_server.commons.*;
 import com.lv.dt_server.dao.UserRepository;
 import com.lv.dt_server.entiy.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,11 +18,18 @@ import java.util.Map;
 public class UserController {
 
     private final HttpServletRequest request;
-    private final UserRepository userRepository;
 
-    public UserController(HttpServletRequest request, UserRepository userRepository) {
+    @Resource
+    private RedisUtils redisUtils;
+
+    @Resource
+    private UserRepository userRepository;
+
+    @Resource
+    private JwtUtils jwtUtils;
+
+    public UserController(HttpServletRequest request) {
         this.request = request;
-        this.userRepository = userRepository;
     }
 
     @PostMapping(path = "/login")
@@ -33,9 +39,10 @@ public class UserController {
         if (user == null) {
             return Result.fail(null, 50000, "登录失败");
         }
+        String token = jwtUtils.generateToken(user.getUserName());
+        redisUtils.set(requestParams.getUsername(), token);
         Map<String, Object> map = new HashMap<>();
-        //TODO token
-        map.put("token", requestParams.getUsername() + requestParams.getPassword());
+        map.put("token", token);
         return map;
     }
 
