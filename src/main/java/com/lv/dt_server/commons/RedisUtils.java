@@ -48,4 +48,7 @@ public class RedisUtils {
         }
     }
 
+    public Boolean delete(String key) {
+        return redisTemplate.delete(key);
+    }
 }

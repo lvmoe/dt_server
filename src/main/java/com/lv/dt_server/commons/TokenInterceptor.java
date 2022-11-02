@@ -23,7 +23,9 @@ public class TokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String authorization = request.getHeader("Authorization");
         if (StringUtils.hasLength(authorization)) {
-            return jwtUtils.verifyToken(authorization);
+            String userName = jwtUtils.verifyTokenAndGetUserName(authorization);
+            request.setAttribute("userName", userName);
+            return StringUtils.hasLength(userName);
         } else {
             return false;
         }

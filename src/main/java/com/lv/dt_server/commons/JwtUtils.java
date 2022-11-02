@@ -37,25 +37,17 @@ public class JwtUtils {
                 .sign(algorithm);
     }
 
-    public boolean verifyToken(String token) {
+    public String verifyTokenAndGetUserName(String token) {
         try {
             if (!StringUtils.hasLength(token)) {
-                return false;
+                return null;
             }
             Algorithm algorithm = Algorithm.HMAC256(tokenSecret);
-
-            JWTVerifier verifier = JWT.require(algorithm)
-                    .withIssuer(ISSUER)
-                    .build();
+            JWTVerifier verifier = JWT.require(algorithm).withIssuer(ISSUER).build();
             DecodedJWT decodedJWT = verifier.verify(token);
-
-            String username = decodedJWT.getClaim("userName").asString();
-            if (!StringUtils.hasLength(username)) {
-                return false;
-            }
+            return decodedJWT.getClaim("userName").asString();
         } catch (TokenExpiredException e) {
-            return false;
+            return null;
         }
-        return true;
     }
 }

@@ -56,7 +56,13 @@ public class UserController {
     }
 
     @PostMapping(path = "/logout")
-    public void logout() {
+    public Object logout() {
         log.info(request.getRequestURI());
+        String userName = request.getAttribute("userName").toString();
+        log.info(userName);
+        if (!redisUtils.delete(userName)) {
+            return Result.fail(null, 50000, "登出失败");
+        }
+        return Result.success("登出成功");
     }
 }
