@@ -22,7 +22,6 @@ spring:
     port: 6379
     timeout: 60000
     database: 1
-    #    password: scca@123
     lettuce:
       pool:
         # 连接池中的最小空闲连接 默认 0

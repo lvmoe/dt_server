@@ -1,6 +1,7 @@
 package com.lv.dt_server.commons;
 
 
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -21,9 +22,15 @@ public class TokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String authorization = request.getHeader("Authorization");
-        if (StringUtils.hasLength(authorization)) {
-            String userName = jwtUtils.verifyTokenAndGetUserName(authorization);
+
+        if (HttpMethod.OPTIONS.toString().equals(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return true;
+        }
+
+        String token = request.getHeader("authorization");
+        if (StringUtils.hasLength(token)) {
+            String userName = jwtUtils.verifyTokenAndGetUserName(token);
             request.setAttribute("userName", userName);
             return StringUtils.hasLength(userName);
         } else {

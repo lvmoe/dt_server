@@ -1,5 +1,6 @@
 package com.lv.dt_server.controller;
 
+import com.alibaba.fastjson2.JSON;
 import com.lv.dt_server.commons.*;
 import com.lv.dt_server.dao.UserRepository;
 import com.lv.dt_server.entiy.User;
@@ -35,31 +36,29 @@ public class UserController {
     @PostMapping(path = "/login")
     public Object login(@RequestBody RequestParams requestParams) {
         log.info(request.getRequestURI());
-        User user = userRepository.findUserByUserNameAndPassword(requestParams.getUsername(), requestParams.getPassword());
+        User user = userRepository.findUserByUserNameAndPassword(requestParams.getUserName(), requestParams.getPassword());
         if (user == null) {
             return Result.fail(null, 50000, "登录失败");
         }
         String token = jwtUtils.generateToken(user.getUserName());
-        redisUtils.set(requestParams.getUsername(), token);
+        redisUtils.set(requestParams.getUserName(), token);
         Map<String, Object> map = new HashMap<>();
         map.put("token", token);
         return map;
     }
 
     @GetMapping(path = "/info")
-    public Object info(@RequestParam String token) {
+    public Object info() {
         log.info(request.getRequestURI());
-        log.info(token);
-        Map<String, Object> map = new HashMap<>();
-        map.put("name", "小天");
-        return map;
+        User user = userRepository.findByUserName(request.getAttribute("userName").toString());
+        user.setPassword(null);
+        return JSON.parseObject(JSON.toJSONString(user), Map.class);
     }
 
     @PostMapping(path = "/logout")
     public Object logout() {
         log.info(request.getRequestURI());
         String userName = request.getAttribute("userName").toString();
-        log.info(userName);
         if (!redisUtils.delete(userName)) {
             return Result.fail(null, 50000, "登出失败");
         }
